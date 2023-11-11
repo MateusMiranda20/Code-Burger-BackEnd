@@ -12,7 +12,7 @@ class Database{
     constructor(){
         this.init()
         this.mongo()
-    }
+    }   
 
     init() {
         this.connection = new Sequelize(configDatabase)
@@ -20,7 +20,7 @@ class Database{
     }
 
     mongo(){
-        this.mongoConnetion = mongoose.connect(
+        this.mongoConnection = mongoose.connect(
             'mongodb://localhost:27017/codeburger',
             {
                 useNewUrlParser: true,

@@ -5,8 +5,9 @@ module.exports = {
     password: 'corujinha123',
     database: 'postgres',
     define: {
-        timespamps: true,
+        timestamps: true,
         underscored: true,
-        underscoredALL: true,
+        underscoredAll: true,
+       
     },
 }
