@@ -1,3 +1,4 @@
-import app from './app'
+import app from './/app'
+const port = 8000
 
-app.listen(3006)
+app.listen(port)

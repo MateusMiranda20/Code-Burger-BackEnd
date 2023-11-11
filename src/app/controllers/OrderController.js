@@ -1,5 +1,7 @@
 
 import * as Yup from 'yup'
+import Product from '../models/Product'
+import Category from '../models/Category'
 
 
 
@@ -15,13 +17,61 @@ class OrderController {
             )
         })
 
+        console.log(request)
+
         try {
             await schema.validateSync(request.body, { abortEarly: false })
         } catch (ero) {
             return response.status(400).json({ error: ero.errors })
         }
 
-        return response.status(201).json(request.body)
+        const productsId = request.body.products.map(products => products.id)
+
+        const updateProducts = await Product.findAll({
+            where:{
+                id:productsId,
+            },
+            include: [
+               {
+                model: Category,
+                as: 'category',
+                attributes: ['name']
+               }
+            ]
+        })
+
+        const editedProduct = updateProducts.map( product =>{
+
+            const productIndex = request.body.products.findIndex( ( requestProduct ) => requestProduct.id === product.id )
+
+
+
+
+
+
+
+
+            const newProducts = {
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                category: product.category.name,
+                url: product.url,
+                quantity: request.body.products[productIndex].quantity,
+            }
+
+            return newProducts
+        })
+
+        const order = {
+            user: {
+                id: request.userId,
+                name: request.userName,
+            },
+            products: editedProduct,
+        }
+
+        return response.status(201).json(editedProduct)
     }
 }
 
