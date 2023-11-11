@@ -38,7 +38,7 @@ class SecaoController {
                 email,
                 name: user.name,
                 admin: user.admin,
-                token:Jwt.sign({id: user.id}, authConfig.secret, {
+                token:Jwt.sign({id: user.id, name: user.name }, authConfig.secret, {
                     expiresIn: authConfig.expiresIn,
                 }),
             })
