@@ -1,5 +1,6 @@
 import Category from '../models/Category'
 import * as Yup from 'yup'
+import User from '../models/User'
 
 class CategoryController {
     async store(request, response) {
@@ -12,6 +13,12 @@ class CategoryController {
             await schema.validateSync(request.body, { abortEarly: false })
         } catch (erro) {
             return response.status(400).json({ error: erro.errors })
+        }
+
+        const { admin: isAdmin} = await User.findByPk(request.userId)
+
+        if(!isAdmin){
+            return response.status(401).json()
         }
 
         const { name } = request.body

@@ -3,6 +3,7 @@ import * as Yup from 'yup'
 import Product from '../models/Product'
 import Category from '../models/Category'
 import Order from '../../schemas/Order'
+import User from '../models/User'
 
 
 
@@ -86,6 +87,13 @@ class OrderController {
         } catch (erro) {
             return response.status(400).json({ error: erro.errors })
         }
+
+        const { admin: isAdmin} = await User.findByPk(request.userId)
+
+        if(!isAdmin){
+            return response.status(401).json()
+        }
+
 
         const { id } = request.params
         const { status } = request.body
