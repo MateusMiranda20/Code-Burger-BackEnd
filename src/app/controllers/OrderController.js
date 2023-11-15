@@ -2,6 +2,7 @@
 import * as Yup from 'yup'
 import Product from '../models/Product'
 import Category from '../models/Category'
+import Order from '../../schemas/Order'
 
 
 
@@ -9,15 +10,14 @@ class OrderController {
     async store(request, response) {
         const schema = Yup.object().shape({
             products: Yup.array().required()
-            .of(
-                Yup.object().shape({
-                    id: Yup.number().required(),
-                    quantity: Yup.number().required(),
-                })
-            )
+                .of(
+                    Yup.object().shape({
+                        id: Yup.number().required(),
+                        quantity: Yup.number().required(),
+                    })
+                )
         })
 
-        console.log(request)
 
         try {
             await schema.validateSync(request.body, { abortEarly: false })
@@ -28,28 +28,21 @@ class OrderController {
         const productsId = request.body.products.map(products => products.id)
 
         const updateProducts = await Product.findAll({
-            where:{
-                id:productsId,
+            where: {
+                id: productsId,
             },
             include: [
-               {
-                model: Category,
-                as: 'category',
-                attributes: ['name']
-               }
+                {
+                    model: Category,
+                    as: 'category',
+                    attributes: ['name']
+                }
             ]
         })
 
-        const editedProduct = updateProducts.map( product =>{
+        const editedProduct = updateProducts.map(product => {
 
-            const productIndex = request.body.products.findIndex( ( requestProduct ) => requestProduct.id === product.id )
-
-
-
-
-
-
-
+            const productIndex = request.body.products.findIndex((requestProduct) => requestProduct.id === product.id)
 
             const newProducts = {
                 id: product.id,
@@ -69,10 +62,44 @@ class OrderController {
                 name: request.userName,
             },
             products: editedProduct,
+            status: 'Pedido realizado',
         }
 
-        return response.status(201).json(editedProduct)
+        const orderResponse = await Order.create(order)
+
+        return response.status(201).json(orderResponse)
     }
+
+    async index(request, response) {
+        const order = await Order.find()
+
+        return response.json(order)
+    }
+
+    async update(request, response) {
+        const schema = Yup.object().shape({
+            status: Yup.string().required()
+        })
+
+        try {
+            await schema.validateSync(request.body, { abortEarly: false })
+        } catch (erro) {
+            return response.status(400).json({ error: erro.errors })
+        }
+
+        const { id } = request.params
+        const { status } = request.body
+
+        try {
+            await Order.updateOne({ _id: id }, { status })
+
+        } catch (error) {
+            return response.status(400).json({ error: error.message })
+        }
+
+        return response.json({ message: 'Status was updated' })
+    }
+
 }
 
 export default new OrderController()
