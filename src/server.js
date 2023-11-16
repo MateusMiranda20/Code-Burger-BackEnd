@@ -1,4 +1,4 @@
-import app from './/app'
-const port = 8082
+import app from './app'
+const port = 3050
 
 app.listen(port)
