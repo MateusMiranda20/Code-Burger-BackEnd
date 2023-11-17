@@ -1,4 +1,4 @@
 import app from './app'
-const port = 3001
+const port = 1000
 
 app.listen(port)
