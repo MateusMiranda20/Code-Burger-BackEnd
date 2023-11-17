@@ -99,7 +99,7 @@ class ProductController {
                 offer,
             },
                 { where: { id } }
-            );
+            )
 
             return response.status(200).json()
         } catch (error) {
