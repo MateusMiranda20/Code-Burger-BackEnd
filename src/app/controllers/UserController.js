@@ -34,7 +34,7 @@ class UserController {
         })
 
         if (userExit) {
-            return response.status(400).json({ erro: 'Usuario já cadastrado'})
+            return response.status(409).json({ erro: 'Usuario já cadastrado'})
         }
 
         console.log(userExit)
