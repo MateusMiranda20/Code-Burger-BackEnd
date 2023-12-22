@@ -1,18 +1,18 @@
-import  Jwt  from "jsonwebtoken";
+import Jwt from "jsonwebtoken";
 import authGonfig from '../../config/auth'
 
 export default (request, response, next) => {
     const autToken = request.headers.authorization
 
-    if(!autToken){
-        return response.status(401).json({ error: 'Token não aprovado'})
+    if (!autToken) {
+        return response.status(401).json({ error: 'Token não aprovado' })
     }
-    
+
 
     const token = autToken.split(' ')[1]
 
     try {
-        Jwt.verify(token, authGonfig.secret, function(err, decoded){
+        Jwt.verify(token, authGonfig.secret, function (err, decoded) {
             if (err) {
                 throw new Error()
             }
@@ -22,8 +22,8 @@ export default (request, response, next) => {
 
             return next()
         })
-    } catch (error) {
-        return response.status(401).json({error: 'Token e invalido'})
+    } catch (err) {
+        return response.status(401).json({ error: 'Token é invalido' })
     }
 
 }

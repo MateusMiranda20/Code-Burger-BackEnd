@@ -18,6 +18,8 @@ routes.post('/users', UserController.store)
 
 routes.post('/secao', SecaoController.store)
 
+
+
 routes.use(authMiddlewares);
 
 routes.post('/products', upload.single('file'), ProductController.store)
