@@ -4,27 +4,46 @@ import User from '../models/User'
 
 class CategotyController {
     async store(request, response) {
-
-        const schema = Yup.object().shape({
-            name: Yup.string().required()
-        })
-
         try {
-            await schema.validateSync(request.body, { abortEarly: false })
-        } catch (err) {
-            return response.status(400).json({ error: err.errors })
+
+            const schema = Yup.object().shape({
+                name: Yup.string().required()
+            })
+
+            try {
+                await schema.validateSync(request.body, { abortEarly: false })
+            } catch (err) {
+                return response.status(400).json({ error: err.errors })
+            }
+
+            const { admin: isAdmin } = await User.findByPk(request.userId)
+
+            if (!isAdmin) {
+                return response.status(401).json()
+            }
+            const { name } = request.body
+
+            let path
+            if (request.file) {
+                path = request.file.filename
+            }
+
+            const categoryExists = await Category.findOne({
+                where: {
+                    name,
+                }
+            })
+
+            if (categoryExists) {
+                return response.status(400).json({ erroe: 'Category already exists' })
+            }
+
+            const { id } = await Category.create({ name, path });
+
+            return response.json({ id, name })
+        } catch (error) {
+
         }
-
-        const { admin: isAdmin } = await User.findByPk(request.userId)
-
-        if (!isAdmin) {
-            return response.status(401).json()
-        }
-        const { name } = request.body
-
-        const category = await Category.create({ name });
-
-        return response.json(category)
     }
 
     async index(request, response) {
@@ -66,7 +85,7 @@ class CategotyController {
                 path = request.file.filename
             }
 
-            await Category.update({ name, path }, {where: { id } })
+            await Category.update({ name, path }, { where: { id } })
 
             return response.status(200)()
         } catch (err) {

@@ -32,8 +32,8 @@ class ProductController {
             name,
             price,
             category_id,
-            path,
-            offer
+            offer,
+            path
         });
 
         return response.json(product)
@@ -95,15 +95,15 @@ class ProductController {
                 name,
                 price,
                 category_id,
-                path,
                 offer,
+                path,
             },
                 { where: { id } }
             )
 
             return response.status(200).json()
         } catch (error) {
-            console.log(error)
+           
         }
     }
 }
