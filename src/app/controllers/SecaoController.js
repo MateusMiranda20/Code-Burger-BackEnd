@@ -1,6 +1,6 @@
 
 import User from '../models/User'
-import  Jwt from 'jsonwebtoken'
+import Jwt from 'jsonwebtoken'
 import * as Yup from 'yup'
 import authConfig from '../../config/auth'
 
@@ -32,16 +32,15 @@ class SecaoController {
             erroEmailOuSenha()
         }
 
-        return response.json(
-            {
-                id: user.id,
-                email,
-                name: user.name,
-                admin: user.admin,
-                token:Jwt.sign({id: user.id, name: user.name }, authConfig.secret, {
-                    expiresIn: authConfig.expiresIn,
-                }),
-            })
+        return response.json({
+            id: user.id,
+            email,
+            name: user.name,
+            admin: user.admin,
+            token: Jwt.sign({ id: user.id, name: user.name }, authConfig.secret, {
+                expiresIn: authConfig.expiresIn,
+            }),
+        })
     }
 }
 
