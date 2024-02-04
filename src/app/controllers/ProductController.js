@@ -32,8 +32,8 @@ class ProductController {
             name,
             price,
             category_id,
+            path,
             offer,
-            path
         });
 
         return response.json(product)
